@@ -1,0 +1,62 @@
+[
+    {
+        "Title": "You Shall Not Fast: A Cookbook",
+        "Author": "Gandalf the Grey",
+        "FirstPublished": "3019-03-25",
+        "BookId": "1"
+    },
+    {
+        "Title": "How to Knock Over Everything",
+        "Author": "Whiskers the Cat",
+        "FirstPublished": "2023-01-01",
+        "BookId": "2"
+    },
+    {
+        "Title": "Am I Overthinking This?",
+        "Author": "An Elf on the Shelf",
+        "FirstPublished": "2020-12-01",
+        "BookId": "3"
+    },
+    {
+        "Title": "Infinite Loops and Caffeine",
+        "Author": "Anonymous Programmer",
+        "FirstPublished": "2024-05-07",
+        "BookId": "4"
+    },
+    {
+        "Title": "Never Leg Day",
+        "Author": "Skip Legman",
+        "FirstPublished": "2022-04-12",
+        "BookId": "4"
+    },
+    {
+        "Title": "I'll Finish This Book Tomorrow",
+        "Author": "Pro Crastinator",
+        "FirstPublished": "2025-06-30",
+        "BookId": "5"
+    },
+    {
+        "Title": "The Art of the Perfect Nap",
+        "Author": "Garfield",
+        "FirstPublished": "1978-06-19",
+        "BookId": "6"
+    },
+    {
+        "Title": "Oh, Really?",
+        "Author": "Dr. Sarcasm",
+        "FirstPublished": "2018-09-15",
+        "BookId": "7"
+    },
+    {
+        "Title": "Earthlings: A Field Guide",
+        "Author": "Zorg of Planet X",
+        "FirstPublished": "2050-11-11",
+        "BookId": "8"
+    },
+    {
+        "Title": "Oops, Wrong Century",
+        "Author": "Time Traveler X",
+        "FirstPublished": "1805-03-14",
+        "BookId": "9"
+    }
+]
