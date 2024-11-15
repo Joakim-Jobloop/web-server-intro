@@ -4,17 +4,20 @@ class Book
     public string Author { get; set; }
     public DateTime FirstPublished { get; set; }
 
-    public string BookId { get; set; }
+    public Guid BookId { get; set; }
 
     public bool IsLent { get; set; }
 
-    public Book(string title, string author, DateTime firstPublished, string bookId, bool isLent = false)
+    public Guid LentTo {get; set; }
+
+    public Book(string title, string author, DateTime firstPublished)
     {
         Title = title;
         Author = author;
         FirstPublished = firstPublished;
-        BookId = bookId;
-        IsLent = isLent;
+        BookId = Guid.NewGuid();
+        IsLent = false;
+        LentTo = Guid.Empty;
     }
 }
 

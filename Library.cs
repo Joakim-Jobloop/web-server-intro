@@ -27,12 +27,17 @@ class Library
         return people;
     }
 
-    public List<Book> ListAvaliableBooks()
+    public List<Book> ListAllBooks()
+    {
+        return books;
+    }
+
+    public List<Book> ListAvailableBooks()
     {
         return books.Where(book => !book.IsLent).ToList();
     }
 
-      public List<Book> ListUnavaliableBooks()
+      public List<Book> ListUnavailableBooks()
     {
         return books.Where(book => book.IsLent).ToList();
     }
@@ -49,5 +54,32 @@ class Library
         }
         return null;
     }
+
+
+public Book? ReturnBookBuyId(Guid id)
+    {
+        Book? book = books.Find((book) =>
+        book.BookId.Equals(id) && book.IsLent);
+
+        if (book != null)
+        {
+            book.IsLent = false;
+            return book;
+        }
+        return null;
+    }
+
+//    public Book? ReturnBookByName(string title)
+//     {
+//         Book? book = books.Find((book) =>
+//         book.Title.Contains(title, StringComparison.OrdinalIgnoreCase) && book.IsLent);
+
+//         if (book != null)
+//         {
+//             book.IsLent = false;
+//             return book;
+//         }
+//         return null;
+//     }
 
 }

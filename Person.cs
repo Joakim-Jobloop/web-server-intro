@@ -5,14 +5,14 @@ class Person
 
     public string Fullname;
     public int Age;
-    public string CustomerId;
+    public Guid CustomerId;
 
     // Configuration
-    public Person(string fullname, int age, string customerId) 
+    public Person(string fullname, int age) 
     {
         Fullname = fullname;
         Age = age;
-        CustomerId = customerId;
+        CustomerId = Guid.NewGuid();
         books = new List<Book>();
     }
 
