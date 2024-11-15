@@ -1,42 +1,47 @@
 class Person
 {
     // Data fields
-    private List<Book> books;
-
-    public string Fullname;
-    public int Age;
-    public Guid CustomerId;
+    public List<Book> Books { get; set; }
+    public string Fullname { get; set; }
+    public int Age { get; set; }
+    public Guid CustomerId { get; set; }
 
     // Configuration
-    public Person(string fullname, int age) 
+    public Person(string fullname, int age)
     {
         Fullname = fullname;
         Age = age;
         CustomerId = Guid.NewGuid();
-        books = new List<Book>();
+        Books = new List<Book>();
     }
 
     // Methods
-    public void PersonBorrowBook(Book borrowedBook)
+
+    // Methods for library books:
+    public List<Book> ListPersonBorrowedBooks()
     {
-        books.Add(borrowedBook);
+        return Books;
     }
-    
-    public List<Book> ListBorrowedBooks()
+
+    public void PersonBorrowBook(Book book)
     {
-        return books;
+        Books.Add(book);
     }
-    public Book? PersonBorrowedBooks(string title)
-    {
-        Book? book = books.Find((book)=> {
-        return book.Title.Any() ? true : false;
-        });
-        return book;
-    }
+
+
+    // Methods for person:
+    // public Book? PersonBorrowedBooks()
+    // {
+    //     Book? book = books.Find((book) =>
+    //     {
+    //         return book.Title.Any() ? true : false;
+    //     });
+    //     return book;
+    // }
 
     public void PersonReturnBook(Book returnedBook)
     {
-        books.Remove(returnedBook);
+        Books.Remove(returnedBook);
 
     }
 }

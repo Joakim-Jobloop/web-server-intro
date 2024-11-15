@@ -24,6 +24,15 @@ library.AddNewBook(sarcasmGuide);
 library.AddNewBook(alienMemoirs);
 library.AddNewBook(timeTravel);
 
+Person person= new Person("Joakim Villo", 36);
+
+library.AddNewPerson(person);
+
+app.MapGet("/customer", () =>
+{
+    return library.ListAllPeople();
+});
+
 app.MapGet("/book", () =>
 {
     return library.ListAllBooks();
@@ -39,33 +48,35 @@ app.MapGet("/book/unavailable", () =>
     return library.ListUnavailableBooks();
 });
 
-app.MapPost("/book/borrow", (BorrowRequest request) => {
+app.MapPost("/book/borrow", (BorrowRequest request) =>
+{
     Book? book = library.LendBook(request.Title);
 
     if (book == null)
     {
         return Results.NotFound();
     }
-    else{
+    else
+    {
         Console.WriteLine("Book borrowed: " + book.Title);
         return Results.Ok(book);
     }
 });
 
-app.MapPost("/book/return", (ReturnRequest request) => {
+app.MapPost("/book/return", (ReturnRequest request) =>
+{
     Book? book = library.ReturnBookBuyId(request.BookId);
 
     if (book == null)
     {
         return Results.NotFound();
     }
-    else{
+    else
+    {
         Console.WriteLine("Book returned: " + book.Title);
         return Results.Ok(book);
     }
 });
-
-
 
 
 app.Run();

@@ -37,7 +37,7 @@ class Library
         return books.Where(book => !book.IsLent).ToList();
     }
 
-      public List<Book> ListUnavailableBooks()
+    public List<Book> ListUnavailableBooks()
     {
         return books.Where(book => book.IsLent).ToList();
     }
@@ -56,30 +56,35 @@ class Library
     }
 
 
-public Book? ReturnBookBuyId(Guid id)
+    public Book? ReturnBookBuyId(Guid id)
     {
         Book? book = books.Find((book) =>
-        book.BookId.Equals(id) && book.IsLent);
+        book.BookId == id && book.IsLent);
 
         if (book != null)
         {
             book.IsLent = false;
+            book.LentTo = Guid.Empty;
             return book;
         }
-        return null;
+        else
+        {
+            return null;
+        }
+
     }
 
-//    public Book? ReturnBookByName(string title)
-//     {
-//         Book? book = books.Find((book) =>
-//         book.Title.Contains(title, StringComparison.OrdinalIgnoreCase) && book.IsLent);
+    //    public Book? ReturnBookByName(string title)
+    //     {
+    //         Book? book = books.Find((book) =>
+    //         book.Title.Contains(title, StringComparison.OrdinalIgnoreCase) && book.IsLent);
 
-//         if (book != null)
-//         {
-//             book.IsLent = false;
-//             return book;
-//         }
-//         return null;
-//     }
+    //         if (book != null)
+    //         {
+    //             book.IsLent = false;
+    //             return book;
+    //         }
+    //         return null;
+    //     }
 
 }
