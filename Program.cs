@@ -24,13 +24,17 @@ library.AddNewBook(sarcasmGuide);
 library.AddNewBook(alienMemoirs);
 library.AddNewBook(timeTravel);
 
-Person person= new Person("Joakim Villo", 36);
+Admin admin= new Admin("Joakim Villo");
+Customer customer = new Customer("Bob Marley", 99);
 
-library.AddNewPerson(person);
+library.AddNewAdmin(admin);
+library.AddNewCustomer(customer);
+
+
 
 app.MapGet("/customer", () =>
 {
-    return library.ListAllPeople();
+    return library.ListAllCustomer();
 });
 
 app.MapGet("/book", () =>
@@ -50,7 +54,11 @@ app.MapGet("/book/unavailable", () =>
 
 app.MapPost("/book/borrow", (BorrowRequest request) =>
 {
-    Book? book = library.LendBook(request.Title);
+    Customer? customer = library.GetCustomerById(request.CustomerId);
+    if (customer == null) return Results.NotFound("Customer not found");
+
+
+    Book? book = library.LendBook(customer, request.Title);
 
     if (book == null)
     {

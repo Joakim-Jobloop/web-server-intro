@@ -2,29 +2,45 @@ class Library
 {
     // Data fields
     private List<Book> books;
-    private List<Person> people;
+    private List<Customer> customers;
+    private List<Admin> admins;
 
     // Configuration
     public Library()
     {
         books = new List<Book>();
-        people = new List<Person>();
+        customers = new List<Customer>();
+        admins = new List<Admin>();
     }
 
-    // Methods, things we can do with the object
+
+    // Admin Methods:
+    public void AddNewAdmin(Admin newAdmin)
+    {
+        admins.Add(newAdmin);
+    }
+
+    // Customer Methods:
+    public void AddNewCustomer(Customer newCustomer)
+    {
+        customers.Add(newCustomer);
+    }
+
+    public Customer? GetCustomerById(Guid id)
+    {
+        return customers.FirstOrDefault(customer => customer.CustomerId == id);
+    }
+
+    public List<Customer> ListAllCustomer()
+    {
+        return customers;
+    }
+
+
+    // Book Methods:
     public void AddNewBook(Book newBook)
     {
         books.Add(newBook);
-    }
-
-    public void AddNewPerson(Person newPerson)
-    {
-        people.Add(newPerson);
-    }
-
-    public List<Person> ListAllPeople()
-    {
-        return people;
     }
 
     public List<Book> ListAllBooks()
@@ -42,14 +58,18 @@ class Library
         return books.Where(book => book.IsLent).ToList();
     }
 
-    public Book? LendBook(string title)
+    public Book? LendBook(Customer customer, string title)
     {
         Book? book = books.Find((book) =>
         book.Title.Contains(title, StringComparison.OrdinalIgnoreCase) && !book.IsLent);
 
+
+
         if (book != null)
         {
             book.IsLent = true;
+            book.LentTo = customer.CustomerId;
+            customer.Books.Add(book);
             return book;
         }
         return null;
@@ -73,6 +93,9 @@ class Library
         }
 
     }
+
+
+
 
     //    public Book? ReturnBookByName(string title)
     //     {
