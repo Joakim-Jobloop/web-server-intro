@@ -17,7 +17,22 @@ class Library
     // Admin Methods:
     public void AddNewAdmin(Admin newAdmin)
     {
+        if (admins.Any(admin => admin.UserName == newAdmin.UserName))
+        {
+            throw new ArgumentException("An admin with this username already exists.");
+        }
+
         admins.Add(newAdmin);
+    }
+
+    public List<Admin> ListAllAdmins()
+    {
+        return admins;
+    }
+
+    public Admin? ValidateAdminCredentials(string username, string password)
+    {
+        return admins.FirstOrDefault(admin => admin.UserName == username && admin.Password == password);
     }
 
     // Customer Methods:
@@ -26,9 +41,14 @@ class Library
         customers.Add(newCustomer);
     }
 
+    public Customer? ValidateCustomerCredentials(string username, string password)
+    {
+        return customers.FirstOrDefault(customer => customer.UserName == username && customer.Password == password);
+    }
+
     public Customer? GetCustomerById(Guid id)
     {
-        return customers.FirstOrDefault(customer => customer.CustomerId == id);
+        return customers.FirstOrDefault(customer => customer.Id == id);
     }
 
     public List<Customer> ListAllCustomer()
@@ -63,20 +83,19 @@ class Library
         Book? book = books.Find((book) =>
         book.Title.Contains(title, StringComparison.OrdinalIgnoreCase) && !book.IsLent);
 
-
-
-        if (book != null)
+        if (book == null)
         {
-            book.IsLent = true;
-            book.LentTo = customer.CustomerId;
-            customer.Books.Add(book);
-            return book;
+            return null;
         }
-        return null;
+        book.IsLent = true;
+        book.LentTo = customer.Id;
+        customer.Books.Add(book);
+        return book;
+
     }
 
 
-    public Book? ReturnBookBuyId(Guid id)
+    public Book? ReturnBookById(Guid id)
     {
         Book? book = books.Find((book) =>
         book.BookId == id && book.IsLent);
@@ -87,10 +106,7 @@ class Library
             book.LentTo = Guid.Empty;
             return book;
         }
-        else
-        {
-            return null;
-        }
+        return null;
 
     }
 

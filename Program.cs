@@ -1,5 +1,21 @@
+
+
 var builder = WebApplication.CreateBuilder(args);
+var loggedInUsers = new Dictionary<Guid, string>();
 var app = builder.Build();
+
+bool IsAuthorized(HttpContext context, string requiredRole)
+{
+    if (context.Request.Headers.TryGetValue("SessionId", out var sessionIdString) &&
+    Guid.TryParse(sessionIdString, out var sessionId) &&
+    loggedInUsers.TryGetValue(sessionId, out var role) &&
+    role == requiredRole)
+    {
+        return true;
+    }
+    return false;
+}
+
 
 Library library = new Library();
 
@@ -24,21 +40,122 @@ library.AddNewBook(sarcasmGuide);
 library.AddNewBook(alienMemoirs);
 library.AddNewBook(timeTravel);
 
-Admin admin= new Admin("Joakim Villo");
-Customer customer = new Customer("Bob Marley", 99);
+Admin admin = new Admin("Joakim Villo", "jvillo");
+Customer customer = new Customer("Bob Marley", 99, "bmarley");
 
 library.AddNewAdmin(admin);
 library.AddNewCustomer(customer);
 
-
-
-app.MapGet("/customer", () =>
+app.MapPost("/login/admin", (LoginRequest loginRequest) =>
 {
-    return library.ListAllCustomer();
+    Admin? admin = library.ValidateAdminCredentials(loginRequest.Username, loginRequest.Password);
+
+    if (admin != null)
+    {
+        var sessionId = Guid.NewGuid();
+        loggedInUsers[sessionId] = "Admin";
+        return Results.Ok(new { Message = "Successfully logged in as admin", SessionId = sessionId });
+    }
+    else
+    {
+        return Results.Unauthorized();
+    }
+    // bool isLoggedIn = false;
+    // Console.WriteLine("***Login to the library database as an admin***");
+    // Console.WriteLine("Type in admin username:");
+    // string? username = Console.ReadLine();
+
+    // while (isLoggedIn == false)
+    // {
+    //     if (username == admin.UserName)
+    //     {
+    //         Console.WriteLine("Type in admin password:");
+    //         string? password = Console.ReadLine();
+
+    //         if (password == admin.AdminPassword)
+    //         {
+    //             isLoggedIn = true;
+    //             Console.WriteLine("Successfully logged in as admin!");
+    //             Console.WriteLine("You have access to the following:");
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("Incorrect password");
+    //         }
+    //     }
+    //     else
+    //     {
+    //         Console.WriteLine("Could not log in as " + username);
+    //     }
+    // }
 });
+
+app.MapGet("/admins", (HttpContext context) =>
+{
+    if (!IsAuthorized(context, "Admin"))
+    {
+        return Results.Unauthorized();
+    }
+    return Results.Ok(library.ListAllAdmins());
+});
+
+app.MapPost("/login/customer", (LoginRequest loginRequest) =>
+{
+
+    Customer? customer = library.ValidateCustomerCredentials(loginRequest.Username, loginRequest.Password);
+
+    if (customer != null)
+    {
+        var sessionId = Guid.NewGuid();
+        loggedInUsers[sessionId] = "Customer";
+        return Results.Ok(new { Message = $"Successfully logged in as {customer.Fullname}", SessionId = sessionId });
+    }
+    else
+    {
+        return Results.Unauthorized();
+    }
+
+    // Console.WriteLine("***Login to the library database as an admin***");
+    // Console.WriteLine("Type in your username:");
+    // string? username = Console.ReadLine();
+
+
+    // if (username == customer.UserName)
+    // {
+    //     Console.WriteLine("Type in your password:");
+    //     string? password = Console.ReadLine();
+
+    //     if (password == customer.CustomerPassword)
+    //     {
+    //         Console.WriteLine("Successfully logged in as " + customer.Fullname);
+    //         Console.WriteLine("You have access to the following:");
+    //     }
+    //     else
+    //     {
+    //         Console.WriteLine("Incorrect password");
+    //     }
+    // }
+    // else
+    // {
+    //     Console.WriteLine("Could not log in as " + username);
+    // }
+});
+
+
+app.MapGet("/customers", (HttpContext context) =>
+{
+    if (!IsAuthorized(context, "Admin"))
+    {
+        return Results.Unauthorized();
+    }
+    return Results.Ok(library.ListAllCustomer());
+});
+
+
 
 app.MapGet("/book", () =>
 {
+    Console.WriteLine("Viewing all books");
     return library.ListAllBooks();
 });
 
@@ -73,7 +190,7 @@ app.MapPost("/book/borrow", (BorrowRequest request) =>
 
 app.MapPost("/book/return", (ReturnRequest request) =>
 {
-    Book? book = library.ReturnBookBuyId(request.BookId);
+    Book? book = library.ReturnBookById(request.BookId);
 
     if (book == null)
     {
@@ -88,3 +205,4 @@ app.MapPost("/book/return", (ReturnRequest request) =>
 
 
 app.Run();
+
