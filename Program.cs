@@ -19,6 +19,9 @@ bool IsAuthorized(HttpContext context, string requiredRole)
 
 Library library = new Library();
 
+
+//TODO Bruk System.text.json (sjekke ut https://docs.microsoft.com/en-us/dotnet/standard/serialization) for å serialize og decerialize json data (sjekk også ut newtonsoft.json):
+// bruk for each i loopen 
 Book cookWithGandalf = new Book("You Shall Not Fast: A Cookbook", "Gandalf the Grey", new DateTime(3019, 3, 25));
 Book catGuide = new Book("How to Knock Over Everything", "Whiskers the Cat", new DateTime(2023, 1, 1));
 Book elfPsychology = new Book("Am I Overthinking This?", "An Elf on the Shelf", new DateTime(2020, 12, 1));
@@ -151,7 +154,19 @@ app.MapGet("/customers", (HttpContext context) =>
     return Results.Ok(library.ListAllCustomer());
 });
 
+app.MapGet("/book/add", (HttpContext context, string title, string author, DateTime publicationDate) =>
+{
+    if (!IsAuthorized(context, "Admin"))
+    {
+        return Results.Unauthorized();
+    }
+    Book newBook = new Book(title, author, publicationDate);
+    library.AddNewBook(newBook);
+    return Results.Ok(newBook);
 
+    // test: /book/add?title=The%20Great%20Gatsby&author=F.%20Scott%20Fitzgerald&publicationDate=1925-04-10
+
+});
 
 app.MapGet("/book", () =>
 {
